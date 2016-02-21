@@ -13,13 +13,13 @@ def connect(url):
     #print url
     report_tree = ''
     try:
-        report_html = requests.get(url)
+        report_html = requests.get(url, timeout = 90)
         report_tree = etree.HTML(report_html.text)
     except:
         print url
-        connect(url)
+        return connect(url)
     if not report_tree:
-        connect(url)
+        return connect(url)
     else:
         return report_tree
 
