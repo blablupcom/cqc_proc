@@ -158,7 +158,7 @@ for row in csv_file:
         try:
             summary_safe = ' '.join(overview_summary_soup.xpath('//div[@id="safe"]//text()'))
         except:
-            summary_safe = ''
+            pass
     # summary_effective_url = ''
     # try:
     #     if 'http' not in report_soup.find('a', text=re.compile('\\bEffective\\b'))['href']:
@@ -176,7 +176,7 @@ for row in csv_file:
         try:
             summary_effective = ' '.join(overview_summary_soup.xpath('//div[@id="effective"]//text()'))
         except:
-            summary_effective = ''
+            pass
     # summary_caring_url = ''
     # try:
     #     caring_url_check = report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
@@ -195,7 +195,7 @@ for row in csv_file:
         try:
             summary_caring = ' '.join(overview_summary_soup.xpath('//div[@id="caring"]//text()'))
         except:
-            summary_caring = ''
+            pass
     # summary_responsive_url = ''
     # try:
     #     if 'http' not in report_soup.find('a', text=re.compile('Responsive'))['href']:
@@ -212,7 +212,7 @@ for row in csv_file:
         try:
             summary_responsive = ' '.join(overview_summary_soup.xpath('//div[@id="responsive"]//text()'))
         except:
-            summary_responsive = ''
+            pass
     # summary_well_led_url = ''
     # try:
     #     if 'http' not in report_soup.find('a', text=re.compile('Well-led'))['href']:
@@ -227,33 +227,33 @@ for row in csv_file:
         try:
             summary_well_led = ' '.join(overview_summary_soup.xpath('//div[@id="wellled"]//text()'))
         except:
-            summary_well_led = ''
-    
+            pass
+
     else:
         overview_summary_url = location_url+'/inspection-summary'
         overview_summary_soup = connect(overview_summary_url)
 
         try:
-            treating_people = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[1]/a/@href')[0])
+            treating_people = ' '.join(overview_summary_soup.xpath('//div[@id="CH1"]/ol//text()'))
         except:
             pass
 
         try:
-            providing_care = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[2]/a/@href')[0])
-        except:
-            pass
-       
-        try:
-            caring_for_people = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[3]/a/@href')[0])
+            providing_care = ' '.join(overview_summary_soup.xpath('//div[@id="CH2"]/ol//text()'))
         except:
             pass
 
         try:
-            staffing = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[4]/a/@href')[0])
+            caring_for_people = ' '.join(overview_summary_soup.xpath('//div[@id="CH3"]/ol//text()'))
+        except:
+            pass
+
+        try:
+            staffing = ' '.join(overview_summary_soup.xpath('//div[@id="CH4"]/ol//text()'))
         except:
             pass
         try:
-            quality_and_suitability = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[5]/a/@href')[0])
+            quality_and_suitability = ' '.join(overview_summary_soup.xpath('//div[@id="CH5"]/ol//text()'))
         except:
             pass
 
