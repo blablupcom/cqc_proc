@@ -141,7 +141,7 @@ for row in csv_file:
         # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
         overview_summary_url = location_url+'/inspection-summary'
         overview_summary_soup = connect(overview_summary_url)
-        overview_summary = ' '.join(overview_summary_soup.xpath('//div[@id="overall"]//text()'))
+        overview_summary = overview_summary_soup.xpath('//div[@id="overall"]//text()')
     # summary_safe_url = ''
     # try:
     #     if 'http' not in report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']:
@@ -156,7 +156,7 @@ for row in csv_file:
     #     # summary_safe_soup = BeautifulSoup(summary_safe_page, 'lxml')
     #     summary_safe_soup = connect(summary_safe_url)
         try:
-            summary_safe = ' '.join(overview_summary_soup.xpath('//div[@id="safe"]//text()'))
+            summary_safe = overview_summary_soup.xpath('//div[@id="safe"]//text()')
         except:
             pass
     # summary_effective_url = ''
@@ -174,7 +174,7 @@ for row in csv_file:
     #     # summary_effective_soup = BeautifulSoup(summary_effective_page, 'lxml')
     #     summary_effective_soup =connect(summary_effective_url)
         try:
-            summary_effective = ' '.join(overview_summary_soup.xpath('//div[@id="effective"]//text()'))
+            summary_effective = overview_summary_soup.xpath('//div[@id="effective"]//text()')
         except:
             pass
     # summary_caring_url = ''
@@ -193,7 +193,7 @@ for row in csv_file:
         # summary_caring_soup = BeautifulSoup(summary_caring_page, 'lxml')
         # summary_caring_soup = connect(summary_caring_url)
         try:
-            summary_caring = ' '.join(overview_summary_soup.xpath('//div[@id="caring"]//text()'))
+            summary_caring = overview_summary_soup.xpath('//div[@id="caring"]//text()')
         except:
             pass
     # summary_responsive_url = ''
@@ -210,7 +210,7 @@ for row in csv_file:
     #     # summary_responsive_soup = BeautifulSoup(summary_responsive_page, 'lxml')
     #     summary_responsive_soup = connect(summary_responsive_url)
         try:
-            summary_responsive = ' '.join(overview_summary_soup.xpath('//div[@id="responsive"]//text()'))
+            summary_responsive = overview_summary_soup.xpath('//div[@id="responsive"]//text()')
         except:
             pass
     # summary_well_led_url = ''
@@ -225,7 +225,7 @@ for row in csv_file:
     # if summary_well_led_url:
     #     summary_well_led_soup = connect(summary_well_led_url)
         try:
-            summary_well_led = ' '.join(overview_summary_soup.xpath('//div[@id="wellled"]//text()'))
+            summary_well_led = overview_summary_soup.xpath('//div[@id="wellled"]//text()')
         except:
             pass
 
@@ -234,26 +234,26 @@ for row in csv_file:
         overview_summary_soup = connect(overview_summary_url)
 
         try:
-            treating_people = ' '.join(overview_summary_soup.xpath('//div[@id="CH1"]/ol//text()'))
+            treating_people = overview_summary_soup.xpath('//div[@id="CH1"]/ol//text()')
         except:
             pass
 
         try:
-            providing_care = ' '.join(overview_summary_soup.xpath('//div[@id="CH2"]/ol//text()'))
+            providing_care = overview_summary_soup.xpath('//div[@id="CH2"]/ol//text()')
         except:
             pass
 
         try:
-            caring_for_people = ' '.join(overview_summary_soup.xpath('//div[@id="CH3"]/ol//text()'))
+            caring_for_people = overview_summary_soup.xpath('//div[@id="CH3"]/ol//text()')
         except:
             pass
 
         try:
-            staffing = ' '.join(overview_summary_soup.xpath('//div[@id="CH4"]/ol//text()'))
+            staffing = overview_summary_soup.xpath('//div[@id="CH4"]/ol//text()')
         except:
             pass
         try:
-            quality_and_suitability = ' '.join(overview_summary_soup.xpath('//div[@id="CH5"]/ol//text()'))
+            quality_and_suitability = overview_summary_soup.xpath('//div[@id="CH5"]/ol//text()')
         except:
             pass
 
