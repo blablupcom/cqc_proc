@@ -9,7 +9,6 @@ from lxml import etree
 # import requests
 
 def connect(url):
-    #print url
     report_tree = ''
     try:
         report_html = urllib2.urlopen(url).read()
@@ -27,8 +26,6 @@ directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information
 soup = connect(directoryUrl)
 
 csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
-# csvA = block.find('a',href=True)
-# csvUrl = csvA['href']
 print csvUrl
 response = urllib2.urlopen(csvUrl)
 csv_file = csv.reader(response)
@@ -49,7 +46,6 @@ for row in csv_file:
     services = row[8]
     local_authority = row[11]
     cqc_id = row[14]
-
     report_soup = connect(location_url)
     latest_report_url = location_url+'/reports'
     latest_report_soup = connect(latest_report_url)
@@ -131,15 +127,12 @@ for row in csv_file:
         pass
     overview_summary_url = ''
     try:
-        if 'http' not in report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]:
-            overview_summary_url = location_url+'/inspection-summary'
-                                                #'http://www.cqc.org.uk'+report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
-        # else:
-        #     overview_summary_url = report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
+        overview_summary_url = report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]:
     except:
         pass
     overview_summary = summary_safe = summary_effective = summary_caring = summary_responsive = summary_well_led = ''
     if overview_summary_url:
+        overview_summary_url = location_url+'/inspection-summary'
         # overview_summary_page = urllib2.urlopen(overview_summary_url)
         # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
         overview_summary_soup = connect(overview_summary_url)
