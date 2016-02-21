@@ -76,20 +76,20 @@ for row in csv_file:
             pass
     report_date = ''
     try:
-        report_date = report_soup.find('div', 'overview-inner latest-report').find('h3').text.strip()
+        report_date = report_soup.xpath('//div[@class="overview-inner latest-report"]/h3/text()')[0]
     except:
         pass
     overview = ''
     try:
-        overview = report_soup.find('div', 'overview-inspections').find('h3').find('strong').text.strip()
+        overview = report_soup.xpath('//div[@class="overview-inspections"]//h3/strong/text()')[0]
     except:
         try:
-            overview = report_soup.find('div', 'header-wrapper').find('h2').text.strip()
+            overview = report_soup.xpath('//div[@class="header-wrapper"]//h2/text()')[0]
         except:
             pass
     overview_description = ''
     try:
-        overview_description = report_soup.find('h3', 'accordion-title').find_next('div', 'accordion-wrapper').text.strip()
+        overview_description = report_soup.xpath('//h3[@class="accordion-title"]/following-sibling::div//text()')[0]
     except:
         pass
     overview_safe = ''
@@ -133,9 +133,10 @@ for row in csv_file:
     overview_summary_url = ''
     try:
         if 'http' not in report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]:
-            overview_summary_url = 'http://www.cqc.org.uk'+report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
-        else:
-            overview_summary_url = report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
+            overview_summary_url = location_url+'/inspection-summary'
+                                                #'http://www.cqc.org.uk'+report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
+        # else:
+        #     overview_summary_url = report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
     except:
         pass
     overview_summary = summary_safe = summary_effective = summary_caring = summary_responsive = summary_well_led = ''
