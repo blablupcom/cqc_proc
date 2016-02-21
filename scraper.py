@@ -127,7 +127,7 @@ for row in csv_file:
         pass
     overview_summary_url = ''
     try:
-        overview_summary_url = report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]:
+        overview_summary_url = report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
     except:
         pass
     overview_summary = summary_safe = summary_effective = summary_caring = summary_responsive = summary_well_led = ''
