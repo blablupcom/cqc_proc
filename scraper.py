@@ -4,19 +4,21 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 import scraperwiki
 import urllib2
+from datetime import datetime
 import csv
 from lxml import etree
-# import requests
+import requests
 
 def connect(url):
+    #print url
     report_tree = ''
     try:
-        report_html = urllib2.urlopen(url).read()
-        report_tree = etree.HTML(report_html)
+        report_html = requests.get(url)
+        report_tree = etree.HTML(report_html.text)
     except:
         print url
         connect(url)
-    if report_tree is None:
+    if not report_tree:
         connect(url)
     else:
         return report_tree
@@ -26,6 +28,8 @@ directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information
 soup = connect(directoryUrl)
 
 csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
+# csvA = block.find('a',href=True)
+# csvUrl = csvA['href']
 print csvUrl
 response = urllib2.urlopen(csvUrl)
 csv_file = csv.reader(response)
@@ -46,6 +50,7 @@ for row in csv_file:
     services = row[8]
     local_authority = row[11]
     cqc_id = row[14]
+
     report_soup = connect(location_url)
     latest_report_url = location_url+'/reports'
     latest_report_soup = connect(latest_report_url)
@@ -130,11 +135,11 @@ for row in csv_file:
         overview_summary_url = report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
     except:
         pass
-    overview_summary = summary_safe = summary_effective = summary_caring = summary_responsive = summary_well_led = ''
+    overview_summary = summary_safe = summary_effective = summary_caring = summary_responsive = summary_well_led = treating_people =providing_care = caring_for_people =staffing = quality_and_suitability = ''
     if overview_summary_url:
-        overview_summary_url = location_url+'/inspection-summary'
         # overview_summary_page = urllib2.urlopen(overview_summary_url)
         # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
+        overview_summary_url = location_url+'/inspection-summary'
         overview_summary_soup = connect(overview_summary_url)
         overview_summary = ' '.join(overview_summary_soup.xpath('//div[@id="overall"]//text()'))
     # summary_safe_url = ''
@@ -223,11 +228,41 @@ for row in csv_file:
             summary_well_led = ' '.join(overview_summary_soup.xpath('//div[@id="wellled"]//text()'))
         except:
             summary_well_led = ''
+    
+    else:
+        overview_summary_url = location_url+'/inspection-summary'
+        overview_summary_soup = connect(overview_summary_url)
+
+        try:
+            treating_people = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[1]/a/@href')[0])
+        except:
+            pass
+
+        try:
+            providing_care = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[2]/a/@href')[0])
+        except:
+            pass
+       
+        try:
+            caring_for_people = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[3]/a/@href')[0])
+        except:
+            pass
+
+        try:
+            staffing = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[4]/a/@href')[0])
+        except:
+            pass
+        try:
+            quality_and_suitability = ' '.join(overview_summary_soup.xpath('//ul[@class="inspection-results"]/li[5]/a/@href')[0])
+        except:
+            pass
+
+
     scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": location_url, "name": unicode(name), "add1": unicode(add1), "add2": unicode(add2), "add3": unicode(add3), "add4": unicode(add4), "postal_code": unicode(postal_code), "telephone": unicode(telephone),
                                                      "CQC_ID": cqc_id, "type_of_service": unicode(type_of_service), "services": unicode(services), "local_authority": unicode(local_authority), "latest_report": unicode(latest_report), "reports_url": unicode(reports_url),
                                                      "report_date": unicode(report_date), "overview": unicode(overview), "overview_description": unicode(overview_description), "overview_safe": unicode(overview_safe), "overview_effective": unicode(overview_effective),
                                                      "overview_caring": unicode(overview_caring), "overview_responsive": unicode(overview_responsive), "overview_well_led": unicode(overview_well_led), "run_by": unicode(run_by), "run_by_url": unicode(run_by_url),
                                                      "overview_summary": unicode(overview_summary), "summary_safe": unicode(summary_safe), "summary_effective": unicode(summary_effective), "summary_caring": unicode(summary_caring), "summary_responsive": unicode(summary_responsive),
-                                                     "summary_well_led": unicode(summary_well_led)
+                                                     "summary_well_led": unicode(summary_well_led), 'treating_people': unicode(treating_people), 'providing_care': unicode(providing_care), 'caring_for_people': unicode(caring_for_people), 'staffing': unicode(staffing), 'quality_and_suitability': unicode(quality_and_suitability)
                                                      })
     p+=1
