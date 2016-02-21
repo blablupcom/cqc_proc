@@ -4,21 +4,20 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 import scraperwiki
 import urllib2
-from datetime import datetime
 import csv
 from lxml import etree
-import requests
+# import requests
 
 def connect(url):
     #print url
     report_tree = ''
     try:
-        report_html = requests.get(url)
-        report_tree = etree.HTML(report_html.text)
+        report_html = urllib2.urlopen(url).read()
+        report_tree = etree.HTML(report_html)
     except:
         print url
         connect(url)
-    if not report_tree:
+    if report_tree is None:
         connect(url)
     else:
         return report_tree
