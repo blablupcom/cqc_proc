@@ -199,7 +199,7 @@ def connect(url):
 #
 # csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
 # print csvUrl
-pool = ThreadPool(40)
+pool = ThreadPool(4)
 response = urllib.urlretrieve('https://raw.githubusercontent.com/blablupcom/rteed/master/CQC_directory.csv')
 
 with open(response[0], 'rb') as csvfile:
