@@ -10,14 +10,12 @@ from lxml import etree
 import requests
 from multiprocessing.dummy import Pool as ThreadPool
 import urllib
+from concurrent.futures import ProcessPoolExecutor
 
 
 def parse_data(row):
-    if 'http' not in row[12]:
-        pass
-    # print p
     location_url = row[12].replace('https://admin.cqc.org.uk', 'http://www.cqc.org.uk')
-    print location_url
+    # print location_url
     name = row[0]
     add1 = ' '.join(row[2].split(',')[:-1])
     add2 = row[2].split(',')[-1]
@@ -114,7 +112,7 @@ def parse_data(row):
         overview_summary_url = report_soup.xpath('//a[text()="Read overall summary"]/@href')[0]
     except:
         pass
-    overview_summary = summary_safe = summary_effective = summary_caring = summary_responsive = summary_well_led = treating_people =providing_care = caring_for_people =staffing = quality_and_suitability = ''
+    overview_summary = summary_safe = summary_effective = summary_caring = summary_responsive = summary_well_led = summary_treating_people_with_respect = summary_providing_care = summary_caring_for_people_safely = summary_staffing = summary_quality_and_suitability_of_management = ''
     if overview_summary_url:
         overview_summary_url = location_url+'/inspection-summary'
         overview_summary_soup = connect(overview_summary_url)
@@ -145,42 +143,36 @@ def parse_data(row):
         overview_summary_soup = connect(overview_summary_url)
 
         try:
-            treating_people = overview_summary_soup.xpath('//div[@id="CH1"]/ol//text()')
+            summary_treating_people_with_respect = overview_summary_soup.xpath('//div[@id="CH1"]/ol//text()')
         except:
             pass
 
         try:
-            providing_care = overview_summary_soup.xpath('//div[@id="CH2"]/ol//text()')
+            summary_providing_care = overview_summary_soup.xpath('//div[@id="CH2"]/ol//text()')
         except:
             pass
 
         try:
-            caring_for_people = overview_summary_soup.xpath('//div[@id="CH3"]/ol//text()')
+            summary_caring_for_people_safely = overview_summary_soup.xpath('//div[@id="CH3"]/ol//text()')
         except:
             pass
 
         try:
-            staffing = overview_summary_soup.xpath('//div[@id="CH4"]/ol//text()')
+            summary_staffing = overview_summary_soup.xpath('//div[@id="CH4"]/ol//text()')
         except:
             pass
         try:
-            quality_and_suitability = overview_summary_soup.xpath('//div[@id="CH5"]/ol//text()')
+            summary_quality_and_suitability_of_management = overview_summary_soup.xpath('//div[@id="CH5"]/ol//text()')
         except:
             pass
 
-    return location_url
-    # scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": location_url, "name": unicode(name), "add1": unicode(add1), "add2": unicode(add2), "add3": unicode(add3), "add4": unicode(add4), "postal_code": unicode(postal_code), "telephone": unicode(telephone),
-    #                                                  "CQC_ID": cqc_id, "type_of_service": unicode(type_of_service), "services": unicode(services), "local_authority": unicode(local_authority), "latest_report": unicode(latest_report), "reports_url": unicode(reports_url),
-    #                                                  "report_date": unicode(report_date), "overview": unicode(overview), "overview_description": unicode(overview_description), "overview_safe": unicode(overview_safe), "overview_effective": unicode(overview_effective),
-    #                                                  "overview_caring": unicode(overview_caring), "overview_responsive": unicode(overview_responsive), "overview_well_led": unicode(overview_well_led), "run_by": unicode(run_by), "run_by_url": unicode(run_by_url),
-    #                                                  "overview_summary": unicode(overview_summary), "summary_safe": unicode(summary_safe), "summary_effective": unicode(summary_effective), "summary_caring": unicode(summary_caring), "summary_responsive": unicode(summary_responsive),
-    #                                                  "summary_well_led": unicode(summary_well_led), 'treating_people': unicode(treating_people), 'providing_care': unicode(providing_care), 'caring_for_people': unicode(caring_for_people), 'staffing': unicode(staffing), 'quality_and_suitability': unicode(quality_and_suitability)
-    #                                                  })
-    # p+=1
+    return location_url, name, add1, add2, add3, add4,  postal_code, telephone, cqc_id, type_of_service, services, local_authority, latest_report, reports_url, report_date, overview, overview_description, overview_safe, overview_effective,\
+                                                     overview_caring, overview_responsive, overview_well_led, run_by, run_by_url, overview_summary, summary_safe, summary_effective, summary_caring, summary_responsive,\
+                                                     summary_well_led, summary_treating_people_with_respect, summary_providing_care, summary_caring_for_people_safely, summary_staffing, summary_quality_and_suitability_of_management
+
 
 
 def connect(url):
-    # print url
     report_tree = ''
     try:
         report_html = requests.get(url, timeout = 90)
@@ -193,19 +185,29 @@ def connect(url):
     else:
         return report_tree
 
-# directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
-#
-# soup = connect(directoryUrl)
-#
-# csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
-# print csvUrl
-pool = ThreadPool(4)
-response = urllib.urlretrieve('https://raw.githubusercontent.com/blablupcom/rteed/master/CQC_directory.csv')
+directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
+
+soup = connect(directoryUrl)
+
+csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
+
+response = urllib.urlretrieve(csvUrl)
 
 with open(response[0], 'rb') as csvfile:
     csv_file = csv.reader(csvfile, delimiter=',')
-    results = pool.map(parse_data, csv_file)
-    for result in results:
-        print result
-    pool.close()
-    pool.join()
+    next(csv_file)
+    next(csv_file)
+    next(csv_file)
+    next(csv_file)
+    next(csv_file)
+    with ProcessPoolExecutor(max_workers=4) as executor:
+        results = executor.map(parse_data, csv_file)
+        for result in results:
+            print result[0]
+            scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": result[0], "name": unicode(result[1]), "add1": unicode(result[2]), "add2": unicode(result[3]), "add3": unicode(result[4]), "add4": unicode(result[5]),
+                                                                        "postal_code": unicode(result[6]), "telephone": unicode(result[7]), "CQC_ID": result[8], "type_of_service": unicode(result[9]), "services": unicode(result[10]), "local_authority": unicode(result[11]), "latest_report": unicode(result[12]), "reports_url": unicode(result[13]),
+                                                         "report_date": unicode(result[14]), "overview": unicode(result[15]), "overview_description": unicode(result[16]), "overview_safe": unicode(result[17]), "overview_effective": unicode(result[18]),
+                                                         "overview_caring": unicode(result[19]), "overview_responsive": unicode(result[20]), "overview_well_led": unicode(result[21]), "run_by": unicode(result[22]), "run_by_url": unicode([23]),
+                                                         "overview_summary": unicode(result[24]), "summary_safe": unicode(result[25]), "summary_effective": unicode(result[26]), "summary_caring": unicode(result[27]), "summary_responsive": unicode(result[28]),
+                                                         "summary_well_led": unicode(result[29]), 'summary_treating_people_with_respect': unicode(result[30]), 'summary_providing_care': unicode(result[31]), 'summary_caring_for_people_safely': unicode(result[32]), 'summary_staffing': unicode(result[33]), 'summary_quality_and_suitability_of_management': unicode(result[34])
+                                                         })
