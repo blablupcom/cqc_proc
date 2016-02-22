@@ -8,36 +8,14 @@ from datetime import datetime
 import csv
 from lxml import etree
 import requests
+from multiprocessing.dummy import Pool as ThreadPool
 
-def connect(url):
-    #print url
-    report_tree = ''
-    try:
-        report_html = requests.get(url, timeout = 90)
-        report_tree = etree.HTML(report_html.text)
-    except:
-        print url
-        return connect(url)
-    if not report_tree:
-        return connect(url)
-    else:
-        return report_tree
 
-directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
 
-soup = connect(directoryUrl)
-
-csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
-# csvA = block.find('a',href=True)
-# csvUrl = csvA['href']
-print csvUrl
-response = urllib2.urlopen(csvUrl)
-csv_file = csv.reader(response)
-p = 0
-for row in csv_file:
-    if 'http' not in row[12]:
+def parse_data(row):
+     if 'http' not in row[12]:
         continue
-    print p
+    # print p
     location_url = row[12].replace('https://admin.cqc.org.uk', 'http://www.cqc.org.uk')
     name = row[0]
     add1 = ' '.join(row[2].split(',')[:-1])
@@ -265,4 +243,41 @@ for row in csv_file:
                                                      "overview_summary": unicode(overview_summary), "summary_safe": unicode(summary_safe), "summary_effective": unicode(summary_effective), "summary_caring": unicode(summary_caring), "summary_responsive": unicode(summary_responsive),
                                                      "summary_well_led": unicode(summary_well_led), 'treating_people': unicode(treating_people), 'providing_care': unicode(providing_care), 'caring_for_people': unicode(caring_for_people), 'staffing': unicode(staffing), 'quality_and_suitability': unicode(quality_and_suitability)
                                                      })
-    p+=1
+    # p+=1
+
+
+def connect(url):
+    #print url
+    report_tree = ''
+    try:
+        report_html = requests.get(url, timeout = 90)
+        report_tree = etree.HTML(report_html.text)
+    except:
+        print url
+        return connect(url)
+    if not report_tree:
+        return connect(url)
+    else:
+        return report_tree
+
+directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
+
+soup = connect(directoryUrl)
+
+csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
+# csvA = block.find('a',href=True)
+# csvUrl = csvA['href']
+print csvUrl
+response = urllib2.urlopen(csvUrl)
+csv_file = csv.reader(response)
+p = 0
+# for row in csv_file:
+pool = ThreadPool(4)
+
+# Open the urls in their own threads
+# and return the results
+results = pool.map(parse_data, csv_file)
+
+#close the pool and wait for the work to finish 
+pool.close()
+pool.join()
