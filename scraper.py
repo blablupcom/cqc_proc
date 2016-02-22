@@ -14,7 +14,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 def parse_data(row):
     if 'http' not in row[12]:
-        continue
+        pass
     # print p
     location_url = row[12].replace('https://admin.cqc.org.uk', 'http://www.cqc.org.uk')
     print location_url
