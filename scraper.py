@@ -9,7 +9,7 @@ import csv
 from lxml import etree
 import requests
 from multiprocessing.dummy import Pool as ThreadPool
-
+import urllib
 
 
 def parse_data(row):
@@ -116,93 +116,25 @@ def parse_data(row):
         pass
     overview_summary = summary_safe = summary_effective = summary_caring = summary_responsive = summary_well_led = treating_people =providing_care = caring_for_people =staffing = quality_and_suitability = ''
     if overview_summary_url:
-        # overview_summary_page = urllib2.urlopen(overview_summary_url)
-        # overview_summary_soup = BeautifulSoup(overview_summary_page, 'lxml')
         overview_summary_url = location_url+'/inspection-summary'
         overview_summary_soup = connect(overview_summary_url)
         overview_summary = overview_summary_soup.xpath('//div[@id="overall"]//text()')
-    # summary_safe_url = ''
-    # try:
-    #     if 'http' not in report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']:
-    #         summary_safe_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']
-    #     else:
-    #         summary_safe_url = report_soup.find('a', text=re.compile('\\bSafe\\b'))['href']
-    # except:
-    #     pass
-    # summary_safe = ''
-    # if summary_safe_url and '#safe' in summary_safe_url:
-    #     # summary_safe_page = urllib2.urlopen(summary_safe_url)
-    #     # summary_safe_soup = BeautifulSoup(summary_safe_page, 'lxml')
-    #     summary_safe_soup = connect(summary_safe_url)
         try:
             summary_safe = overview_summary_soup.xpath('//div[@id="safe"]//text()')
         except:
             pass
-    # summary_effective_url = ''
-    # try:
-    #     if 'http' not in report_soup.find('a', text=re.compile('\\bEffective\\b'))['href']:
-    #         summary_effective_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('\\bEffective\\b'))['href']
-    #     else:
-    #         summary_effective_url = report_soup.find('a', text=re.compile('\\bEffective\\b'))['href']
-    # except:
-    #     pass
-    # # print summary_effective_url
-    # summary_effective = ''
-    # if summary_effective_url:
-    #     # summary_effective_page = urllib2.urlopen(summary_effective_url)
-    #     # summary_effective_soup = BeautifulSoup(summary_effective_page, 'lxml')
-    #     summary_effective_soup =connect(summary_effective_url)
         try:
             summary_effective = overview_summary_soup.xpath('//div[@id="effective"]//text()')
         except:
             pass
-    # summary_caring_url = ''
-    # try:
-    #     caring_url_check = report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
-    #     if '#caring' in caring_url_check:
-    #         if 'http' not in report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']:
-    #             summary_caring_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
-    #         else:
-    #             summary_caring_url = report_soup.find('a', text=re.compile('\\bCaring\\b'))['href']
-    # except:
-    #     pass
-    # summary_caring = ''
-    # if summary_caring_url:
-        # summary_caring_page = urllib2.urlopen(summary_caring_url)
-        # summary_caring_soup = BeautifulSoup(summary_caring_page, 'lxml')
-        # summary_caring_soup = connect(summary_caring_url)
         try:
             summary_caring = overview_summary_soup.xpath('//div[@id="caring"]//text()')
         except:
             pass
-    # summary_responsive_url = ''
-    # try:
-    #     if 'http' not in report_soup.find('a', text=re.compile('Responsive'))['href']:
-    #         summary_responsive_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Responsive'))['href']
-    #     else:
-    #         summary_responsive_url = report_soup.find('a', text=re.compile('Responsive'))['href']
-    # except:
-    #     pass
-    # summary_responsive = ''
-    # if summary_responsive_url:
-    #     # summary_responsive_page = urllib2.urlopen(summary_responsive_url)
-    #     # summary_responsive_soup = BeautifulSoup(summary_responsive_page, 'lxml')
-    #     summary_responsive_soup = connect(summary_responsive_url)
         try:
             summary_responsive = overview_summary_soup.xpath('//div[@id="responsive"]//text()')
         except:
             pass
-    # summary_well_led_url = ''
-    # try:
-    #     if 'http' not in report_soup.find('a', text=re.compile('Well-led'))['href']:
-    #         summary_well_led_url = 'http://www.cqc.org.uk'+report_soup.find('a', text=re.compile('Well-led'))['href']
-    #     else:
-    #         summary_well_led_url = report_soup.find('a', text=re.compile('Well-led'))['href']
-    # except:
-    #     pass
-    # summary_well_led = ''
-    # if summary_well_led_url:
-    #     summary_well_led_soup = connect(summary_well_led_url)
         try:
             summary_well_led = overview_summary_soup.xpath('//div[@id="wellled"]//text()')
         except:
@@ -236,19 +168,19 @@ def parse_data(row):
         except:
             pass
 
-
-    scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": location_url, "name": unicode(name), "add1": unicode(add1), "add2": unicode(add2), "add3": unicode(add3), "add4": unicode(add4), "postal_code": unicode(postal_code), "telephone": unicode(telephone),
-                                                     "CQC_ID": cqc_id, "type_of_service": unicode(type_of_service), "services": unicode(services), "local_authority": unicode(local_authority), "latest_report": unicode(latest_report), "reports_url": unicode(reports_url),
-                                                     "report_date": unicode(report_date), "overview": unicode(overview), "overview_description": unicode(overview_description), "overview_safe": unicode(overview_safe), "overview_effective": unicode(overview_effective),
-                                                     "overview_caring": unicode(overview_caring), "overview_responsive": unicode(overview_responsive), "overview_well_led": unicode(overview_well_led), "run_by": unicode(run_by), "run_by_url": unicode(run_by_url),
-                                                     "overview_summary": unicode(overview_summary), "summary_safe": unicode(summary_safe), "summary_effective": unicode(summary_effective), "summary_caring": unicode(summary_caring), "summary_responsive": unicode(summary_responsive),
-                                                     "summary_well_led": unicode(summary_well_led), 'treating_people': unicode(treating_people), 'providing_care': unicode(providing_care), 'caring_for_people': unicode(caring_for_people), 'staffing': unicode(staffing), 'quality_and_suitability': unicode(quality_and_suitability)
-                                                     })
+    return location_url
+    # scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": location_url, "name": unicode(name), "add1": unicode(add1), "add2": unicode(add2), "add3": unicode(add3), "add4": unicode(add4), "postal_code": unicode(postal_code), "telephone": unicode(telephone),
+    #                                                  "CQC_ID": cqc_id, "type_of_service": unicode(type_of_service), "services": unicode(services), "local_authority": unicode(local_authority), "latest_report": unicode(latest_report), "reports_url": unicode(reports_url),
+    #                                                  "report_date": unicode(report_date), "overview": unicode(overview), "overview_description": unicode(overview_description), "overview_safe": unicode(overview_safe), "overview_effective": unicode(overview_effective),
+    #                                                  "overview_caring": unicode(overview_caring), "overview_responsive": unicode(overview_responsive), "overview_well_led": unicode(overview_well_led), "run_by": unicode(run_by), "run_by_url": unicode(run_by_url),
+    #                                                  "overview_summary": unicode(overview_summary), "summary_safe": unicode(summary_safe), "summary_effective": unicode(summary_effective), "summary_caring": unicode(summary_caring), "summary_responsive": unicode(summary_responsive),
+    #                                                  "summary_well_led": unicode(summary_well_led), 'treating_people': unicode(treating_people), 'providing_care': unicode(providing_care), 'caring_for_people': unicode(caring_for_people), 'staffing': unicode(staffing), 'quality_and_suitability': unicode(quality_and_suitability)
+    #                                                  })
     # p+=1
 
 
 def connect(url):
-    #print url
+    # print url
     report_tree = ''
     try:
         report_html = requests.get(url, timeout = 90)
@@ -261,24 +193,19 @@ def connect(url):
     else:
         return report_tree
 
-directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
+# directoryUrl = "http://www.cqc.org.uk/content/how-get-and-re-use-cqc-information-and-data#directory"
+#
+# soup = connect(directoryUrl)
+#
+# csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
+# print csvUrl
+pool = ThreadPool(40)
+response = urllib.urlretrieve('https://raw.githubusercontent.com/blablupcom/rteed/master/CQC_directory.csv')
 
-soup = connect(directoryUrl)
-
-csvUrl = soup.xpath('//div[@id="directory"]//a/@href')[0]
-# csvA = block.find('a',href=True)
-# csvUrl = csvA['href']
-print csvUrl
-response = urllib2.urlopen(csvUrl)
-csv_file = csv.reader(response)
-p = 0
-# for row in csv_file:
-pool = ThreadPool(4)
-
-# Open the urls in their own threads
-# and return the results
-results = pool.map(parse_data, csv_file)
-
-#close the pool and wait for the work to finish 
-pool.close()
-pool.join()
+with open(response[0], 'rb') as csvfile:
+    csv_file = csv.reader(csvfile, delimiter=',')
+    results = pool.map(parse_data, csv_file)
+    for result in results:
+        print result
+    pool.close()
+    pool.join()
