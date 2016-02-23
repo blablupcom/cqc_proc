@@ -200,7 +200,7 @@ with open(response[0], 'rb') as csvfile:
     next(csv_file)
     next(csv_file)
     next(csv_file)
-    with ProcessPoolExecutor(max_workers=4) as executor:
+    with ProcessPoolExecutor(max_workers=2) as executor:
         results = executor.map(parse_data, csv_file)
         for result in results:
             print result[0]
