@@ -10,7 +10,7 @@ from lxml import etree
 import requests
 from multiprocessing.dummy import Pool as ThreadPool
 import urllib
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 
 def parse_data(row):
@@ -200,7 +200,7 @@ with open(response[0], 'rb') as csvfile:
     next(csv_file)
     next(csv_file)
     next(csv_file)
-    with ProcessPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         results = executor.map(parse_data, csv_file)
         for result in results:
             print result[0]
