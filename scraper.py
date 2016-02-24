@@ -15,6 +15,7 @@ from fork import fork
 
 
 def parse_data(row):
+    results = {}
     location_url = row[12].replace('https://admin.cqc.org.uk', 'http://www.cqc.org.uk')
     # print location_url
     name = row[0]
@@ -166,10 +167,16 @@ def parse_data(row):
             summary_quality_and_suitability_of_management = overview_summary_soup.xpath('//div[@id="CH5"]/ol//text()')
         except:
             pass
+    l = [location_url, name, add1, add2, add3, add4,  postal_code, telephone, cqc_id, type_of_service, services, local_authority, latest_report, reports_url, report_date, overview, overview_description, overview_safe, overview_effective,
+                                                                 overview_caring, overview_responsive, overview_well_led, run_by, run_by_url, overview_summary, summary_safe, summary_effective, summary_caring, summary_responsive,
+                                                                 summary_well_led, summary_treating_people_with_respect, summary_providing_care, summary_caring_for_people_safely, summary_staffing, summary_quality_and_suitability_of_management]
+    print name
+    results.setdefault(location_url,[]).append(l)
+    return results
 
-    return location_url, name, add1, add2, add3, add4,  postal_code, telephone, cqc_id, type_of_service, services, local_authority, latest_report, reports_url, report_date, overview, overview_description, overview_safe, overview_effective,\
-                                                     overview_caring, overview_responsive, overview_well_led, run_by, run_by_url, overview_summary, summary_safe, summary_effective, summary_caring, summary_responsive,\
-                                                     summary_well_led, summary_treating_people_with_respect, summary_providing_care, summary_caring_for_people_safely, summary_staffing, summary_quality_and_suitability_of_management
+    # return location_url, name, add1, add2, add3, add4,  postal_code, telephone, cqc_id, type_of_service, services, local_authority, latest_report, reports_url, report_date, overview, overview_description, overview_safe, overview_effective,\
+    #                                                  overview_caring, overview_responsive, overview_well_led, run_by, run_by_url, overview_summary, summary_safe, summary_effective, summary_caring, summary_responsive,\
+    #                                                  summary_well_led, summary_treating_people_with_respect, summary_providing_care, summary_caring_for_people_safely, summary_staffing, summary_quality_and_suitability_of_management
 
 
 
