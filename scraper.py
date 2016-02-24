@@ -210,16 +210,16 @@ with open(response[0], 'rb') as csvfile:
     next(csv_file)
     for res in csv_file:
         results = fork(parse_data, res)
-                 
+        p=0         
         for key, val in results.iteritems():
            for v in val:
-                print v[0], v[1]
-        # for result in results:
-        #     print result
-        #     scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": result[0], "name": unicode(result[1]), "add1": unicode(result[2]), "add2": unicode(result[3]), "add3": unicode(result[4]), "add4": unicode(result[5]),
-        #                                                                 "postal_code": unicode(result[6]), "telephone": unicode(result[7]), "CQC_ID": result[8], "type_of_service": unicode(result[9]), "services": unicode(result[10]), "local_authority": unicode(result[11]), "latest_report": unicode(result[12]), "reports_url": unicode(result[13]),
-        #                                                  "report_date": unicode(result[14]), "overview": unicode(result[15]), "overview_description": unicode(result[16]), "overview_safe": unicode(result[17]), "overview_effective": unicode(result[18]),
-        #                                                  "overview_caring": unicode(result[19]), "overview_responsive": unicode(result[20]), "overview_well_led": unicode(result[21]), "run_by": unicode(result[22]), "run_by_url": unicode([23]),
-        #                                                  "overview_summary": unicode(result[24]), "summary_safe": unicode(result[25]), "summary_effective": unicode(result[26]), "summary_caring": unicode(result[27]), "summary_responsive": unicode(result[28]),
-        #                                                  "summary_well_led": unicode(result[29]), 'summary_treating_people_with_respect': unicode(result[30]), 'summary_providing_care': unicode(result[31]), 'summary_caring_for_people_safely': unicode(result[32]), 'summary_staffing': unicode(result[33]), 'summary_quality_and_suitability_of_management': unicode(result[34])
-        #                                                  })
+                print p
+                scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": v[0], "name": unicode(v[1]), "add1": unicode(v[2]), "add2": unicode(v[3]), "add3": unicode(v[4]), "add4": unicode(v[5]),
+                                                                                            "postal_code": unicode(v[6]), "telephone": unicode(v[7]), "CQC_ID": v[8], "type_of_service": unicode(v[9]), "services": unicode(v[10]), "local_authority": unicode(v[11]), "latest_report": unicode(v[12]), "reports_url": unicode(v[13]),
+                                                                             "report_date": unicode(v[14]), "overview": unicode(v[15]), "overview_description": unicode(v[16]), "overview_safe": unicode(v[17]), "overview_effective": unicode(v[18]),
+                                                                             "overview_caring": unicode(v[19]), "overview_responsive": unicode(v[20]), "overview_well_led": unicode(v[21]), "run_by": unicode(v[22]), "run_by_url": unicode(v[23]),
+                                                                             "overview_summary": unicode(v[24]), "summary_safe": unicode(v[25]), "summary_effective": unicode(v[26]), "summary_caring": unicode(v[27]), "summary_responsive": unicode(v[28]),
+                                                                             "summary_well_led": unicode(v[29]), 'summary_treating_people_with_respect': unicode(v[30]), 'summary_providing_care': unicode(v[31]), 'summary_caring_for_people_safely': unicode(v[32]), 'summary_staffing': unicode(v[33]), 'summary_quality_and_suitability_of_management': unicode(v[34])
+                                                                             })
+                p+=1
+
