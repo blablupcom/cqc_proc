@@ -201,7 +201,7 @@ with open(response[0], 'rb') as csvfile:
     next(csv_file)
     next(csv_file)
     next(csv_file)
-    results = fork(parse_data, csv_file)
+    results = fork(parse_data, list(csv_file))
         # results = executor.map(parse_data, csv_file)
     for result in results:
         print result[0]
