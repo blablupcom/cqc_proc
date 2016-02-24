@@ -210,9 +210,9 @@ with open(response[0], 'rb') as csvfile:
     next(csv_file)
     for res in csv_file:
         results = fork(parse_data, res)
-        # print results
-        for result in results:
-            print result
+        print results
+        # for result in results:
+        #     print result
         #     scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": result[0], "name": unicode(result[1]), "add1": unicode(result[2]), "add2": unicode(result[3]), "add3": unicode(result[4]), "add4": unicode(result[5]),
         #                                                                 "postal_code": unicode(result[6]), "telephone": unicode(result[7]), "CQC_ID": result[8], "type_of_service": unicode(result[9]), "services": unicode(result[10]), "local_authority": unicode(result[11]), "latest_report": unicode(result[12]), "reports_url": unicode(result[13]),
         #                                                  "report_date": unicode(result[14]), "overview": unicode(result[15]), "overview_description": unicode(result[16]), "overview_safe": unicode(result[17]), "overview_effective": unicode(result[18]),
