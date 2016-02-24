@@ -8,6 +8,7 @@
 lxml==3.4.4
 cssselect==0.9.1
 futures==3.0.5
+xfork ==0.37
 pyopenssl
 ndg-httpsclient
 pyasn1
