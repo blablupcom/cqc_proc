@@ -213,7 +213,7 @@ with open(response[0], 'rb') as csvfile:
                  
         for key, val in results.iteritems():
            for v in val:
-                print v[0]
+                print v[0], v[1]
         # for result in results:
         #     print result
         #     scraperwiki.sqlite.save(unique_keys=['location_url'], data={"location_url": result[0], "name": unicode(result[1]), "add1": unicode(result[2]), "add2": unicode(result[3]), "add3": unicode(result[4]), "add4": unicode(result[5]),
